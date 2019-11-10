@@ -4,13 +4,17 @@ import pandas as pd
 import time
 
 chrome_driver_path_isabela = "C:\\Users\\isabe\\Downloads\\chromedriver_win32\\chromedriver.exe"
+# websites 
 panadew = "https://www.panadew.ca/search-results/?lang=#headeranchor"
 frontenac = "https://www.frontenacproperty.com/properties/student/?bedrooms=1&sort=availability&order=ASC"
-# Frontenac's robots.txt file: 
-# User-agent: *
-# Disallow: /wp-admin/
-# Allow: /wp-admin/admin-ajax.php
-# Disallow: /author/
+bpe = "https://bpe-rentals.com/?s=&property_status=&property_type=&property_location=Kingston&min_price=&max_price=&min_bedrooms=1&max_bedrooms=2&min_bathrooms=&max_bathrooms=&min_area=&max_area=&min_parking_place=&max_parking_place=&post_type=tm-property" 
+highpoint = "https://highpointproperties.ca/unit-search/?city=Kingston&type=1&price&prox&available=-1&submit=submit" 
+keyprop = "http://www.keyprop.com/listings/"
+queens_housing_listings = "https://listingservice.housing.queensu.ca/index.php/rental/rentalsearch/action/results_list/"
+heron = "https://www.heronmanagement.com/listings/" 
+axon = "https://axonproperties.ca/available-rentals/" 
+
+
 
 #configure web driver 
 def configure_driver_chrome(chrome_driver_path, link):
@@ -48,7 +52,7 @@ def reading_soup_contents(driver):
 
 ####################### main 
 
-d = configure_driver_chrome(chrome_driver_path_isabela, panadew)
+d = configure_driver_chrome(chrome_driver_path_isabela, frontenac)
 reading_soup_contents(d)
 
 
