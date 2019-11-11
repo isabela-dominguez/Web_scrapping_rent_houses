@@ -14,8 +14,6 @@ queens_housing_listings = "https://listingservice.housing.queensu.ca/index.php/r
 heron = "https://www.heronmanagement.com/listings/" 
 axon = "https://axonproperties.ca/available-rentals/" 
 
-
-
 #configure web driver 
 def configure_driver_chrome(chrome_driver_path, link):
     driver = webdriver.Chrome(chrome_driver_path_isabela)
@@ -24,6 +22,7 @@ def configure_driver_chrome(chrome_driver_path, link):
     return driver
 
 
+#functions
 def reading_soup_contents(driver):
     #seeting variables
     house = []
@@ -34,25 +33,25 @@ def reading_soup_contents(driver):
     content = driver.page_source
     soup = BeautifulSoup(content)
 
-    for a in soup.findAll('a'):
-        print("################# soup content")
-        #print(a)
-        print(soup.get_text())
-        #name = a.find('div', attrs={'class':"row property-listings grid"})
-        #price = a.find('div', attrs={'class':'_1vC4OE _2rQ-NK'})
-        #rating = a.find('div', attrs={'class':'hGSR34 _2beYZw'})
+    # for b in soup.findAll(class ="four columns listingblockgrid listingblock"):
+    #     print("################# soup content")
+    #     print(a)
+    #     print(soup.get_text())
+    #     #name = a.find('div', attrs={'class':"row property-listings grid"})
+    #     #price = a.find('div', attrs={'class':'_1vC4OE _2rQ-NK'})
+    #     #rating = a.find('div', attrs={'class':'hGSR34 _2beYZw'})
 
-        #house.append(name.text)
-        #prices.append(price.text)
-        #ratings.append(rating.text) 
+    #     #house.append(name.text)
+    #     #prices.append(price.text)
+    #     #ratings.append(rating.text) 
 
-    print(house)
+    # print(house)
 
 
 
 ####################### main 
 
-d = configure_driver_chrome(chrome_driver_path_isabela, frontenac)
+d = configure_driver_chrome(chrome_driver_path_isabela, panadew)
 reading_soup_contents(d)
 
 
