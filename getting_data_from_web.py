@@ -2,6 +2,7 @@ from selenium import webdriver
 from bs4 import BeautifulSoup
 import pandas as pd 
 import time
+import requests
 
 chrome_driver_path_isabela = "C:\\Users\\isabe\\Downloads\\chromedriver_win32\\chromedriver.exe"
 # websites 
@@ -23,36 +24,47 @@ def configure_driver_chrome(chrome_driver_path, link):
 
 
 #functions
-def reading_soup_contents(driver):
+def reading_soup_contents_panadew(driver):
     #seeting variables
     house = []
-    price = []
+    prices = []
     availability = [] 
+    bedrooms = []
+    info = []
+    count = 0
 
     #getting the acutal content
-    content = driver.page_source
-    soup = BeautifulSoup(content)
+    r = requests.get(panadew)
+    soup = BeautifulSoup(r.content, 'html.parser')
+    #content = driver.page_source
+    #soup = BeautifulSoup(content, features="html.parser")
 
-    # for b in soup.findAll(class ="four columns listingblockgrid listingblock"):
-    #     print("################# soup content")
-    #     print(a)
-    #     print(soup.get_text())
-    #     #name = a.find('div', attrs={'class':"row property-listings grid"})
-    #     #price = a.find('div', attrs={'class':'_1vC4OE _2rQ-NK'})
-    #     #rating = a.find('div', attrs={'class':'hGSR34 _2beYZw'})
+    for a in soup.findAll("div", {"class" : "four columns listingblockgrid listingblock"}):
+        #print("################# soup content")
+        #print(b)
+        #print(soup.get_text())
+        count += 1
+        name = a.find('h4', attrs={'class':"address"})
+        price = a.find('p', attrs={'class':'price'})
+        bedroom_info = a.find('p', attrs={'class':'twofeatures'})
+        #rating = a.find('div', attrs={'class':'hGSR34 _2beYZw'})
+        house.append((name.text).strip("\t"))
+        prices.append(price.text)
+        bedrooms.append(bedroom_info.text) 
 
-    #     #house.append(name.text)
-    #     #prices.append(price.text)
-    #     #ratings.append(rating.text) 
+   
 
-    # print(house)
+    print(count)
+    df = pd.DataFrame({'House':house,'Price':prices,'bedrooms':bedrooms}) 
+    print(df)
+
 
 
 
 ####################### main 
 
 d = configure_driver_chrome(chrome_driver_path_isabela, panadew)
-reading_soup_contents(d)
+reading_soup_contents_panadew(d)
 
 
 
