@@ -15,7 +15,7 @@ queens_housing_listings = "https://listingservice.housing.queensu.ca/index.php/r
 heron = "https://www.heronmanagement.com/listings/" 
 axon = "https://axonproperties.ca/available-rentals/" 
 
-#configure web driver 
+#configure web driver, not needed when using requests
 def configure_driver_chrome(chrome_driver_path, link):
     driver = webdriver.Chrome(chrome_driver_path_isabela)
     driver.get(link)
@@ -24,47 +24,60 @@ def configure_driver_chrome(chrome_driver_path, link):
 
 
 #functions
-def reading_soup_contents_panadew(driver):
+def reading_soup_contents_panadew():
     #seeting variables
     house = []
     prices = []
-    availability = [] 
+    bedrooms_and_availability = [] 
     bedrooms = []
+    availability = []
     info = []
+    links = []
     count = 0
 
-    #getting the acutal content
+    #getting the acutal content, using requests and html parser
     r = requests.get(panadew)
     soup = BeautifulSoup(r.content, 'html.parser')
+    # attempt using driver, requests is quicker
     #content = driver.page_source
     #soup = BeautifulSoup(content, features="html.parser")
 
+    #finding all available listings using soup
     for a in soup.findAll("div", {"class" : "four columns listingblockgrid listingblock"}):
-        #print("################# soup content")
-        #print(b)
-        #print(soup.get_text())
-        count += 1
         name = a.find('h4', attrs={'class':"address"})
         price = a.find('p', attrs={'class':'price'})
-        bedroom_info = a.find('p', attrs={'class':'twofeatures'})
-        #rating = a.find('div', attrs={'class':'hGSR34 _2beYZw'})
-        house.append((name.text).strip("\t"))
-        prices.append(price.text)
-        bedrooms.append(bedroom_info.text) 
+        bedrooms_and_availability = a.find('p', attrs={'class':'twofeatures'})
+        #finding all the links
+        for l in a.findAll('a', {"class": "btn btn-lightgray"}):
+            try:
+                links.append(l['href'])
+                
+            except KeyError:
+                pass
+        
+        #appending found info
+        house.append((name.text).strip("\n\t"))
+        prices.append((price.text).strip("\n\t"))
+        bedrooms_and_availability.strip("\n\t")
+        bedrooms.strip("|")
+        print(bedrooms)
+        #bedrooms.append((bedroom_info.text).strip("\n\t"))
+        
+        
 
    
-
-    print(count)
-    df = pd.DataFrame({'House':house,'Price':prices,'bedrooms':bedrooms}) 
-    print(df)
+    
+    #df = pd.DataFrame({'House':house,'Price':prices,'bedrooms':bedrooms, 'links':links}) 
+    
+    #df.to_csv('panadew.csv', index=False)
 
 
 
 
 ####################### main 
 
-d = configure_driver_chrome(chrome_driver_path_isabela, panadew)
-reading_soup_contents_panadew(d)
+#d = configure_driver_chrome(chrome_driver_path_isabela, panadew)
+reading_soup_contents_panadew()
 
 
 
