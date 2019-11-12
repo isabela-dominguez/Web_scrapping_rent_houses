@@ -6,7 +6,7 @@ import requests
 
 chrome_driver_path_isabela = "C:\\Users\\isabe\\Downloads\\chromedriver_win32\\chromedriver.exe"
 # websites 
-panadew = "https://www.panadew.ca/search-results/?lang=#headeranchor"
+panadew = "https://www.panadew.ca/property_type/student-rentals#headeranchor"
 frontenac = "https://www.frontenacproperty.com/properties/student/?bedrooms=1&sort=availability&order=ASC"
 bpe = "https://bpe-rentals.com/?s=&property_status=&property_type=&property_location=Kingston&min_price=&max_price=&min_bedrooms=1&max_bedrooms=2&min_bathrooms=&max_bathrooms=&min_area=&max_area=&min_parking_place=&max_parking_place=&post_type=tm-property" 
 highpoint = "https://highpointproperties.ca/unit-search/?city=Kingston&type=1&price&prox&available=-1&submit=submit" 
@@ -28,12 +28,14 @@ def reading_soup_contents_panadew():
     #seeting variables
     house = []
     prices = []
-    bedrooms_and_availability = [] 
+    info = []
+    num_bed_type_and_availability = "" 
     bedrooms = []
+    type_apt = []
     availability = []
     info = []
     links = []
-    count = 0
+   
 
     #getting the acutal content, using requests and html parser
     r = requests.get(panadew)
@@ -46,7 +48,7 @@ def reading_soup_contents_panadew():
     for a in soup.findAll("div", {"class" : "four columns listingblockgrid listingblock"}):
         name = a.find('h4', attrs={'class':"address"})
         price = a.find('p', attrs={'class':'price'})
-        bedrooms_and_availability = a.find('p', attrs={'class':'twofeatures'})
+        info = a.find('p', attrs={'class':'twofeatures'})
         #finding all the links
         for l in a.findAll('a', {"class": "btn btn-lightgray"}):
             try:
@@ -58,18 +60,15 @@ def reading_soup_contents_panadew():
         #appending found info
         house.append((name.text).strip("\n\t"))
         prices.append((price.text).strip("\n\t"))
-        bedrooms_and_availability.strip("\n\t")
-        bedrooms.strip("|")
-        print(bedrooms)
-        #bedrooms.append((bedroom_info.text).strip("\n\t"))
-        
-        
+        num_bed_type_and_availability = (info.text).strip()
+        num_bed_type_and_availability = num_bed_type_and_availability.replace('\n\n', '|')
+        num_bed_type_and_availability = num_bed_type_and_availability.split("|")
+        bedrooms.append(num_bed_type_and_availability[0])
+        type_apt.append(num_bed_type_and_availability[1])
+        availability.append(num_bed_type_and_availability[2])
 
-   
-    
-    #df = pd.DataFrame({'House':house,'Price':prices,'bedrooms':bedrooms, 'links':links}) 
-    
-    #df.to_csv('panadew.csv', index=False)
+    df = pd.DataFrame({'House':house, 'bedrooms':bedrooms, 'Price':prices, 'Availability': availability, 'type of apt': type_apt, 'links':links}) 
+    df.to_csv('panadew.csv', index=False)
 
 
 
